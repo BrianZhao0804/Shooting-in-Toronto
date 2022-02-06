@@ -2,6 +2,7 @@
 title: "The dangrous of shooting in different time range"
 date: "2022/02/05"
 author: "Hang Zhao 1005950936"
+thanks: "Code and data are available at: https://github.com/BrianZhao0804/Shooting-in-Toronto"
 output: pdf_document
 abstract: "The total number of shootings and firearm discharges cases is increasing significantly in these years. This report will offer Toronto residents an advise that which time range is safer to go out by analyze the shootings and firearm discharges data. The morning is much safer to avoid facing shootings and firearm discharges."
 bibliography: reference.bib
@@ -58,7 +59,7 @@ data1 = data %>%
 ### 2.3.1 Overall Shooting in day of week
   In the bar chart below, it is obvious that the total number of shootings and firearm discharges happened in Toronto from 2012 to 2020 in Saturday and Sunday is higher than the total number of shootings and firearm discharges happened in other five weekdays. This shows that the shootings and firearm discharges happened more frequently in weekends than in weekdays. Also, in each day, more than half of the shootings and firearm discharges happened at the night and evening. The time range which the shootings and firearm discharges happened least is the morning. 
 
-```{r 2, echo=FALSE, fig.height=6, fig.width=8}
+```{r 2, echo=FALSE, fig.height=6, fig.width=8, fig.cap="This bar chart use the time range to fill define the shootings in different time range."}
 library(ggplot2)
 data %>% filter(!is.na(Day_of_week)) %>% 
   ggplot(aes(x= Day_of_week, fill = Time_Range)) + geom_bar() + theme_classic()+ labs(x = "Time of Shootings & Firearm Discharges", y = "Counts", title = "Bar chart of the number of shootings & firearm discharges happened in different time")
@@ -83,27 +84,31 @@ knitr::kable(summary_table)
 ```
   In this table above, it shows that the mean of the total number of the person who is dead or injured as a result of injuries sustained from a bullet(s) reaches the highest in the night which is 1.057. This means that in average, there is 1.057 person was dead or injured due to the shootings and firearm discharges. Besides, the mean of the mean of the total number of the person who is dead or injured is 0.49 in the morning is the lowest, which means that the shootings and firearm discharges is more more dangerous at night than the shootings and firearm discharges in the morning. Furthermore, the mean of the total number of the person who is dead or injured at night is more than twice of the mean in the morning. Also, it is clear that the median of the of the total number of the person who is dead or injured in the moning is 0, which means that more than half of the crimes, there was not any person get hurt in the shootings and firearm discharges in the morning. The last column shows the mean geometry of all crimes happened in each time range. This is the meddle point of the location that the shooting happened. 
   
-  
-```{r 4, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r 4, echo=FALSE, fig.height=3, fig.width=6, fig.cap="This scalar plot use the number of death for X-axis and number of injury for y-aix."}
 data %>% ggplot(aes(x = Death, y = Injuries,color = Time_Range), inherit.aes = FALSE) + geom_point() + theme_classic()+
   labs(x = "Number of Death", y = "Number of Injuries", title = "Scalar plot between the Death and Injuries")
 ```
+
   In this scalar plot above, it is obvious that there is not a linear relationship between the number of death due to the shootings and firearm discharges and the injury due to the shootings and firearm discharges. There is a significant point which shows there was a extremely dangerous shooting case in Toronto which caused 2 death and 24 injury. This case happened at Jul 16, 2012. It happened around 10:30 p.m. at 193 Danzig St. near Morningside Avenue and Lawrence Avenue East after a fight broke out during an outdoor party. At the time, hundreds of people were gathered for a barbecue, and it is believed more than one person fired a gun (@13). This case also shows at the table above that the maximum of the total number of the person who is dead or injured the night is 26. 
   
-
-```{r 5, echo=FALSE, warning=FALSE}
+```{r 5, echo=FALSE, fig.cap="This box plot shows the total number of death and injury in different time range.", fig.height=3, fig.width=6, warning=FALSE}
 data %>% ggplot(aes(y = (Death + Injuries), x= Time_Range)) + geom_boxplot() + theme_classic()+ylim(0,8)+
   labs(x = "Time range of the Shootings & Firearm Discharges", y = "Total number of death and injuries", title = "Boxplot of the total number of death and injuries in different time range")
-``` 
-  To make the boxplot, it ignore the extreme case that shows before in the scalar plot in order to avoid extremely high outlier. The boxplot above shows that the night gets the most outliers which means that there were much more  shootings and firearm discharges cases that caused more than 2 people get hurt. Compatitively, there were less cases that no more than one people get hurt in the morning shootings and firearm discharges cases. 
+```
+
+  To make the boxplot, it ignores the extreme case that shows before in the scalar plot in order to avoid extremely high outlier. The boxplot above shows that the night gets the most outliers which means that there were much more shootings and firearm discharges cases that caused more than 2 people get hurt. Compatitively, there were less cases that no more than one people get hurt in the morning shootings and firearm discharges cases.
+
+
+\newpage
 
 ### 2.3.3 Shooting cases location
 ```{r 6, echo=FALSE}
 table <- data %>% filter(!is.na(Hood_ID))%>% group_by(Hood_ID)%>%summarise(n=n())%>%arrange(desc(n))%>%head(n=5)
 
-knitr::kable(table)
+knitr::kable(table) %>% kable_styling(latex_options = "HOLD_position")
 ```
   This table shows the top 5 identifiers of neighbourhood where homicide occurred which there happened more shootings and firearm discharges cases. These neighbourhoods are West Humber-Clairville, Malvern, Mount Olive-Silverstone-Jamestown, Black Creek and Glenfield-Jane Heights. These five neighbourhoods is more dangerous that the others in Toronto, competitively. For example, there were 279 shootings and firearm discharges cases in the Glenfield-Jane Heights neighbourhood. The last column nemed geometry shows the geometry of these five neighbourhoods. 
+
 
 
 \newpage
