@@ -1,5 +1,1 @@
-# starter_folder
-
-This repo....
-
-It is organised as follows...
+  This report uses the data from the open-access platform Open Data Toronto, provided by the Toronto Police Services to analyze the main time range of the shootings and firearm discharges happened in these several years in Toronto. This report uses bar chart, boxplot and scalar plot to analyze the data in order to getting the result. Furthermore, this research can offer Toronto residents an advice that which time range is safer to go out.
