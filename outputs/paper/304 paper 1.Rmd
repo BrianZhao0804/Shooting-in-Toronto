@@ -1,0 +1,117 @@
+---
+title: "The dangrous of shooting in different time range"
+date: "2022/02/05"
+author: "Hang Zhao 1005950936"
+output: pdf_document
+abstract: "The total number of shootings and firearm discharges cases is increasing significantly in these years. This report will offer Toronto residents an advise that which time range is safer to go out by analyze the shootings and firearm discharges data. The morning is much safer to avoid facing shootings and firearm discharges."
+bibliography: reference.bib
+---
+```{r 1, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+library(tidyverse)
+library(kableExtra)
+library(opendatatoronto)
+library(dplyr)
+ 
+# get package
+package <- show_package("4bc5511d-0ecf-487a-9214-7b2359ad8f61")
+package
+ 
+# get all resources for this package
+resources <- list_package_resources("4bc5511d-0ecf-487a-9214-7b2359ad8f61")
+ 
+# identify datastore resources; by default, Toronto Open Data sets datastore resource format to CSV for non-geospatial and GeoJSON for geospatial resources
+datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'))
+ 
+# load the first datastore resource as a sample
+data <- filter(datastore_resources, row_number()==1) %>% get_resource()
+
+data1 = data %>%
+  select(Day_of_week, Time_Range, Death, Injuries, Hood_ID, Neighbourhood)
+```
+
+# 1 Introduction
+  Shooting is not strange thing in Canadian daily life. Just these days, in Feb 1, 2022, near Goreway Drive and Derry Road, Peel Regional Police said officers were called to check on the well-being of a girl that had been shot. The girl was found suffering from a gunshot wound. She died at the scene. The girl is only 14 ears old.(@9) The shooting is not far from our daily life. Therefore, it is necessary to define what is the main time range of the shootings and firearm discharges happened in order to avoid going outside at this high risk time range. Also, by the data form the Tronto Police Service, the total number of shootings and firearm discharges cases is increasing significantly from 2004 to 2020(@12). 
+  
+  As a gun legal country, people can purchase and own guns in Canada. This offers a high probability of the shooting happened. Everyone who lives in Canada can buy guns legally by taking the classes of firearms and get the license, including the citizens, permeate residents and international students. (@8) There are two kinds of firearm class, the restricted class includes any rifle or shotgun that is neither restricted nor prohibited, the non-restricted class includes the handguns that are not prohibited firearms and also the guns that are capable of discharging centre-fire ammunition in a semi-automatic manner.(@7) Those guns' lethality is enough to hurt people seriously. 
+  
+  This report shows that in the weekend night, the probability of shootings and firearm discharges is largest, and the crime will be more deadly. The morning is much safer to avoid facing shootings and firearm discharges.
+  
+  This project uses the data from the open-access platform Open Data Toronto, provided by the Toronto Police Services to analyze the main time range of the shootings and firearm discharges happened in these several years in Toronto. Furthermore, this research can offer Toronto residents an advice that which time range is safer to go out. The data set will be processed using R, and a package inside R called tidyverse (@1). All figures and tables will be created with R using ggplot2 (@1), dplyr (@3), and kableExtra (@4). To generate this R markdown report, knitr package (@6) was also used. 
+  
+  
+# 2 Data
+
+## 2.1 Data Source
+  This report utilizes the data on all shooting-related occurrences reported to the Toronto Police Service (@10). The data named about shootings and firearm discharges is published by the Toronto Police Services. The shootings and firearm discharges dataset analyzed in this report is in csv format from Toronto Police Service using R package opendatatoronto (@5). This data was last refreshed on Mar 23, 2021 by Toronto Police Service.
+
+## 2.2 Methodology and Data Collection:
+  This dataset contains all shootings and firearm discharges cases in Toronto from 2004 to 2020. The data is collected by the Toronto Police Station. If there is evidence that a projectile was fired from a firearm (defined under the Criminal Code of Canada), this may include an accidental discharge, a celebratory fire, a drive-by, etc. The police will define this is a shooting case.(@11) The Toronto Police Station will update the new shooting cases in to this dataset after a period. In this case, the authenticity of this dataset should be perfect. This dataset shows that there are 4857 cases of shooting-related occurrences reported to the Toronto Police Service. While this may also have some unreported shooting cases to the Toronto Police Station. On the other hand, as the loud sound of the gun firing, it is hard to escape the police to find the case. Therefore, the unreported guns shooting cases will be an exactly low quantity of cases. Furthermore, this data is reliable to define the main time range of the shootings and firearm discharges happened in these several years in Toronto. 
+  
+  Also there is another limitation of this data, which is to protect the privacy of the parties involved in the crime, crime occurrence locations have been deliberately offset to the nearest road intersection node. As the location of occurrences is offset, the numbers by Division and Neighborhood may not accurately reflect the number of occurrences within these geographies. Since the data cannot be guaranteed for accuracy, completeness, or timeliness, it should not be compared with any other source of crime data. While this report is working on the time range when the crime happened. This limitation of the location will be make a sinificant bias to the result. 
+
+## 2.3 Data Characteristics
+  This dataset includes 4857 cases of shootings and firearm discharges in Toronto from 2004 to 2020, which means that on average, there are 303 shootings happened each year in Toronto. There are total of 4857 observations and 15 variables which are unique row identifier for open data database, occurrence number, date shooting occurred, year shooting occurred, month shooting occurred, day of week shooting occurred, hour shooting occurred, time range shooting occurred, count of deaths resulted from shooting-related event, count of injuries resulted from shooting-related event, identifier of neighborhood where homicide occurred, name of neighborhood where homicide occurred, autogenerated unique record identifier. 
+  
+  This report will foucus on the time range shooting occurred, count of deaths resulted from shooting-related event and count of injuries resulted from shooting-related event. The time range is the police define that a day in four time ranges, which are morning(6-11), afternoon(12-17), evening(18-23) and night(0-5). The person who is struck by a bullet from a firearm (as defined by the Criminal Code of Canada) will be defined as a injured person resulted from shooting-related event. There are two different injury levels, death is where the injured person (as defined above) has died as a result of injuries sustained from a bullet(s), and the injuries is where the injured person (as defined above) has non-fatal physical injuries as a result of a bullet(s).
+  
+### 2.3.1 Overall Shooting in day of week
+  In the bar chart below, it is obvious that the total number of shootings and firearm discharges happened in Toronto from 2012 to 2020 in Saturday and Sunday is higher than the total number of shootings and firearm discharges happened in other five weekdays. This shows that the shootings and firearm discharges happened more frequently in weekends than in weekdays. Also, in each day, more than half of the shootings and firearm discharges happened at the night and evening. The time range which the shootings and firearm discharges happened least is the morning. 
+
+```{r 2, echo=FALSE, fig.height=6, fig.width=8}
+library(ggplot2)
+data %>% filter(!is.na(Day_of_week)) %>% 
+  ggplot(aes(x= Day_of_week, fill = Time_Range)) + geom_bar() + theme_classic()+ labs(x = "Time of Shootings & Firearm Discharges", y = "Counts", title = "Bar chart of the number of shootings & firearm discharges happened in different time")
+```
+
+### 2.3.2 Number of people injured due to the shooting
+
+```{r 3, echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+summary_table <- data %>% filter(!is.na(Time_Range)) %>% 
+  group_by(Time_Range) %>% summarise(
+                                  min = min((Death + Injuries)),
+                                  Q1 = quantile((Death + Injuries),0.25),
+                                  median = median((Death + Injuries)),
+                                  Q3 = quantile((Death + Injuries),0.75),
+                                  max = max((Death + Injuries)),
+                                  IQR = Q3 - Q1,
+                                  mean = mean((Death + Injuries)), 
+                                  sd = sd((Death + Injuries))) 
+# change their orders, add or remove some of them
+knitr::kable(summary_table)
+
+```
+  In this table above, it shows that the mean of the total number of the person who is dead or injured as a result of injuries sustained from a bullet(s) reaches the highest in the night which is 1.057. This means that in average, there is 1.057 person was dead or injured due to the shootings and firearm discharges. Besides, the mean of the mean of the total number of the person who is dead or injured is 0.49 in the morning is the lowest, which means that the shootings and firearm discharges is more more dangerous at night than the shootings and firearm discharges in the morning. Furthermore, the mean of the total number of the person who is dead or injured at night is more than twice of the mean in the morning. Also, it is clear that the median of the of the total number of the person who is dead or injured in the moning is 0, which means that more than half of the crimes, there was not any person get hurt in the shootings and firearm discharges in the morning. The last column shows the mean geometry of all crimes happened in each time range. This is the meddle point of the location that the shooting happened. 
+  
+  
+```{r 4, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+data %>% ggplot(aes(x = Death, y = Injuries,color = Time_Range), inherit.aes = FALSE) + geom_point() + theme_classic()+
+  labs(x = "Number of Death", y = "Number of Injuries", title = "Scalar plot between the Death and Injuries")
+```
+  In this scalar plot above, it is obvious that there is not a linear relationship between the number of death due to the shootings and firearm discharges and the injury due to the shootings and firearm discharges. There is a significant point which shows there was a extremely dangerous shooting case in Toronto which caused 2 death and 24 injury. This case happened at Jul 16, 2012. It happened around 10:30 p.m. at 193 Danzig St. near Morningside Avenue and Lawrence Avenue East after a fight broke out during an outdoor party. At the time, hundreds of people were gathered for a barbecue, and it is believed more than one person fired a gun (@13). This case also shows at the table above that the maximum of the total number of the person who is dead or injured the night is 26. 
+  
+
+```{r 5, echo=FALSE, warning=FALSE}
+data %>% ggplot(aes(y = (Death + Injuries), x= Time_Range)) + geom_boxplot() + theme_classic()+ylim(0,8)+
+  labs(x = "Time range of the Shootings & Firearm Discharges", y = "Total number of death and injuries", title = "Boxplot of the total number of death and injuries in different time range")
+``` 
+  To make the boxplot, it ignore the extreme case that shows before in the scalar plot in order to avoid extremely high outlier. The boxplot above shows that the night gets the most outliers which means that there were much more  shootings and firearm discharges cases that caused more than 2 people get hurt. Compatitively, there were less cases that no more than one people get hurt in the morning shootings and firearm discharges cases. 
+
+### 2.3.3 Shooting cases location
+```{r 6, echo=FALSE}
+table <- data %>% filter(!is.na(Hood_ID))%>% group_by(Hood_ID)%>%summarise(n=n())%>%arrange(desc(n))%>%head(n=5)
+
+knitr::kable(table)
+```
+  This table shows the top 5 identifiers of neighbourhood where homicide occurred which there happened more shootings and firearm discharges cases. These neighbourhoods are West Humber-Clairville, Malvern, Mount Olive-Silverstone-Jamestown, Black Creek and Glenfield-Jane Heights. These five neighbourhoods is more dangerous that the others in Toronto, competitively. For example, there were 279 shootings and firearm discharges cases in the Glenfield-Jane Heights neighbourhood. The last column nemed geometry shows the geometry of these five neighbourhoods. 
+
+
+\newpage
+
+
+# Reference
+
+
+
+
+
