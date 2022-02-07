@@ -36,7 +36,7 @@ data <- filter(datastore_resources, row_number()==1) %>% get_resource()
   
   This report uses bar chart, boxplot and scalar plot to analyze the data in order to getting the result. This report shows that in the weekend night, the probability of shootings and firearm discharges is largest, and the crime will be more deadly. The morning is much safer to avoid facing shootings and firearm discharges.
   
-  This project uses the data from the open-access platform Open Data Toronto, provided by the Toronto Police Services to analyze the main time range of the shootings and firearm discharges happened in these several years in Toronto. Furthermore, this research can offer Toronto residents an advice that which time range is safer to go out. The data set will be processed using R, and a package inside R called tidyverse (@1). All figures and tables will be created with R using ggplot2 (@1), dplyr (@3), and kableExtra (@4). To generate this R markdown report, knitr package (@6) was also used. 
+  This project uses the data from the open-access platform Open Data Toronto, provided by the Toronto Police Services to analyze the main time range of the shootings and firearm discharges happened in these several years in Toronto. Furthermore, this research can offer Toronto residents an advice that which time range is safer to go out. The data set will be processed using R(@citeR), and a package inside R called tidyverse (@1). All figures and tables will be created with R using ggplot2 (@1), dplyr (@3), and kableExtra (@4). To generate this R markdown report, knitr package (@6) was also used. 
   
   
 # 2 Data
